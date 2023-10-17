@@ -5,7 +5,7 @@ import './App.css'
 const Button = ({ text, handleClick }) => <button onClick={handleClick}>{text}</button>
 
 
-const Display = ({ text, count }) => <p>{`${text} ${count}`}</p>
+const StatisticLine = ({ text, value }) => <tr><td>{text}</td><td>{value}</td></tr>
 
 
 const Statistics = ({ good, neutral, bad, total, average, positive }) => {
@@ -21,12 +21,16 @@ const Statistics = ({ good, neutral, bad, total, average, positive }) => {
 	return (
 		<>
 			<h2>statistics</h2>
-			<Display text={"good"} count={good} />
-			<Display text={"neutral"} count={neutral} />
-			<Display text={"bad"} count={bad} />
-			<Display text={"all"} count={total} />
-			<Display text={"average"} count={average} />
-			<Display text={"positive"} count={positive + " %"} />
+			<table>
+				<tbody style={{textAlign: "left"}}>
+					<StatisticLine text="good" value={good} />
+					<StatisticLine text="neutral" value={neutral} />
+					<StatisticLine text="bad" value={bad} />
+					<StatisticLine text="all" value={total} />
+					<StatisticLine text="average" value={average} />
+					<StatisticLine text="positive" value={positive + " %"} />
+				</tbody>
+			</table>
 		</>
 	)
 }
@@ -66,9 +70,9 @@ function App() {
 	return (
 		<>
 			<h2>give feedback</h2>
-			<Button text={"good"} handleClick={handleGood} />
-			<Button text={"neutral"} handleClick={handleNeutral} />
-			<Button text={"bad"} handleClick={handleBad} />
+			<Button text="good" handleClick={handleGood} />
+			<Button text="neutral" handleClick={handleNeutral} />
+			<Button text="bad" handleClick={handleBad} />
 			<Statistics good={good} neutral={neutral} bad={bad} total={total} average={average} positive={positive} />
 		</>
 	)
