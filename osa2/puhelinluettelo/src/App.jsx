@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
+import axios from 'axios'
 
 
-const Filter = ({keyword, changeKeyword}) => (
+const Filter = ({ keyword, changeKeyword }) => (
 	<div>
 		filter shown with: <input type='text' name='keyword' value={keyword} onChange={changeKeyword} />
 	</div>
 )
 
 
-const PersonForm = ({onSubmit, newName, changeName, newNumber, changeNumber}) => (
+const PersonForm = ({ onSubmit, newName, changeName, newNumber, changeNumber }) => (
 	<form onSubmit={onSubmit}>
 		<div>
 			name: <input name='name' value={newName} onChange={changeName} />
@@ -24,12 +25,12 @@ const PersonForm = ({onSubmit, newName, changeName, newNumber, changeNumber}) =>
 )
 
 
-const PersonLine = ({person}) => (
+const PersonLine = ({ person }) => (
 	<li>{person.name} {person.number}</li>
 )
 
 
-const Persons = ({personList}) => (
+const Persons = ({ personList }) => (
 	<ul>
 		{personList.map(person =>
 			<PersonLine key={person.name} person={person} />)}
@@ -39,15 +40,20 @@ const Persons = ({personList}) => (
 
 
 const App = () => {
-	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas', number: '040-123456' },
-		{ name: 'Ada Lovelace', number: '39-44-5323523' },
-		{ name: 'Dan Abramov', number: '12-43-234345' },
-		{ name: 'Mary Poppendieck', number: '39-23-6423122' }
-	]);
+	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [keyword, setKeyword] = useState('');
+
+	useEffect(() => {
+		axios
+			.get("http://localhost:3001/persons")
+			.then(promise => {
+				console.log(promise),
+					setPersons(promise.data)
+			})
+	}, [])
+
 
 	const handleNameChange = (event) => {
 		setNewName(event.target.value);
