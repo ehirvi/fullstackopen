@@ -45,9 +45,11 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 	const [keyword, setKeyword] = useState('');
 
+	const URL = "http://localhost:3001/persons";
+
 	useEffect(() => {
 		axios
-			.get("http://localhost:3001/persons")
+			.get(URL)
 			.then(promise => {
 				console.log(promise),
 					setPersons(promise.data)
@@ -72,9 +74,14 @@ const App = () => {
 		if (persons.filter(person => person.name == newName).length != 0) {
 			alert(`${newName} is already added to the phonebook`);
 		} else {
-			setPersons(persons.concat({ name: newName, number: newNumber }));
-			setNewName("");
-			setNewNumber("");
+			axios
+				.post(URL, { name: newName, number: newNumber })
+				.then(promise => {
+					console.log(promise.data),
+						setPersons(persons.concat(promise.data)),
+						setNewName(""),
+						setNewNumber("")
+				});
 		}
 	}
 
