@@ -15,5 +15,9 @@ const create = (newObject) => (
         .then(promise => promise.data)
 )
 
+const remove = (objectId) => {
+    axios
+        .delete(`${URL}/${objectId}`)
+}
 
-export default { getAll, create }
+export default { getAll, create, remove }

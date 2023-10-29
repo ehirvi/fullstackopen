@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import axios from 'axios'
 import personService from './services/persons'
 
 
@@ -26,15 +25,15 @@ const PersonForm = ({ onSubmit, newName, changeName, newNumber, changeNumber }) 
 )
 
 
-const PersonLine = ({ person }) => (
-	<li>{person.name} {person.number}</li>
+const PersonLine = ({ person, deletePerson }) => (
+	<li>{person.name} {person.number}<button onClick={() => deletePerson(person)}>delete</button></li>
 )
 
 
-const Persons = ({ personList }) => (
+const Persons = ({ personList, deletePerson }) => (
 	<ul>
 		{personList.map(person =>
-			<PersonLine key={person.name} person={person} />)}
+			<PersonLine key={person.name} person={person} deletePerson={deletePerson} />)}
 	</ul>
 )
 
@@ -82,6 +81,14 @@ const App = () => {
 		}
 	}
 
+	const deletePerson = (deletedPerson) => {
+		if (window.confirm(`Delete ${deletedPerson.name}?`)) {
+			personService
+				.remove(deletedPerson.id)
+			setPersons(persons.filter(person => person.id !== deletedPerson.id))
+		}
+	}
+
 	const personList = persons.filter(person =>
 		person.name.toLowerCase()
 			.includes(keyword));
@@ -93,7 +100,7 @@ const App = () => {
 			<h2>Add a new</h2>
 			<PersonForm onSubmit={addPerson} newName={newName} newNumber={newNumber} changeName={handleNameChange} changeNumber={handleNumberChange} />
 			<h2>Numbers</h2>
-			<Persons personList={personList} />
+			<Persons personList={personList} deletePerson={deletePerson} />
 		</div>
 	)
 
