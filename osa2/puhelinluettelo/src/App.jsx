@@ -45,13 +45,14 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('');
 	const [keyword, setKeyword] = useState('');
 
-	useEffect(() => {
+	useEffect(() => getPersonList, []);
+
+	const getPersonList = () => {
 		personService
 			.getAll()
-			.then(allPersons => {
-				setPersons(allPersons)
-			})
-	}, [])
+			.then(allPersons =>
+				setPersons(allPersons))
+	}
 
 
 	const handleNameChange = (event) => {
@@ -66,10 +67,20 @@ const App = () => {
 		setKeyword(event.target.value);
 	}
 
+	const personAlreadyExists = () => {
+		return (persons.filter(person =>
+			person.name.toLowerCase() == newName.toLowerCase()).length !== 0 ? true : false)
+	}
+
+	const getPersonId = (personName) => {
+		return (persons.filter(person =>
+			person.name.toLowerCase() == personName.toLowerCase())[0].id)
+	}
+
 	const addPerson = (event) => {
 		event.preventDefault();
-		if (persons.filter(person => person.name == newName).length != 0) {
-			alert(`${newName} is already added to the phonebook`);
+		if (personAlreadyExists()) {
+			updatePerson();
 		} else {
 			personService
 				.create({ name: newName, number: newNumber })
@@ -81,11 +92,21 @@ const App = () => {
 		}
 	}
 
+
 	const deletePerson = (deletedPerson) => {
 		if (window.confirm(`Delete ${deletedPerson.name}?`)) {
 			personService
 				.remove(deletedPerson.id)
-			setPersons(persons.filter(person => person.id !== deletedPerson.id))
+			setPersons(persons.filter(person => person.id !== deletedPerson.id));
+		}
+	}
+
+
+	const updatePerson = () => {
+		if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
+			personService
+				.update(getPersonId(newName), { name: newName, number: newNumber })
+				.then(getPersonList)
 		}
 	}
 

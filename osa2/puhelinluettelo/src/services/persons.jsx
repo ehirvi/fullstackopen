@@ -20,4 +20,10 @@ const remove = (objectId) => {
         .delete(`${URL}/${objectId}`)
 }
 
-export default { getAll, create, remove }
+const update = (personId, updatedObject) => (
+    axios
+        .put(`${URL}/${personId}`, updatedObject)
+        .then(promise => promise.data)
+)
+
+export default { getAll, create, remove, update }
