@@ -63,8 +63,7 @@ const App = () => {
 	const getPersonList = () => {
 		personService
 			.getAll()
-			.then(allPersons =>
-				setPersons(allPersons))
+			.then(allPersons => setPersons(allPersons))
 	}
 
 
@@ -80,20 +79,20 @@ const App = () => {
 		setKeyword(event.target.value);
 	}
 
-	const personAlreadyExists = () => {
+	const personAlreadyExists = (name) => {
 		return (persons.filter(person =>
-			person.name.toLowerCase() == newName.toLowerCase()).length !== 0 ? true : false)
+			person.name.toLowerCase() == name.toLowerCase()).length !== 0 ? true : false)
 	}
 
-	const getPersonId = (personName) => {
+	const getPersonId = (name) => {
 		return (persons.filter(person =>
-			person.name.toLowerCase() == personName.toLowerCase())[0].id)
+			person.name === name)[0].id)
 	}
 
 	const addPerson = (event) => {
 		event.preventDefault();
-		if (personAlreadyExists()) {
-			updatePerson();
+		if (personAlreadyExists(newName)) {
+			updatePerson()
 		} else {
 			personService
 				.create({ name: newName, number: newNumber })
@@ -111,19 +110,24 @@ const App = () => {
 		if (window.confirm(`Delete ${deletedPerson.name}?`)) {
 			personService
 				.remove(deletedPerson.id)
-			showNotification(`Removed ${deletedPerson.name}`, "success")
+				.then(res => showNotification(`Removed ${deletedPerson.name}`, "success"))
+				.catch(error => showNotification(`${deletedPerson.name} has already been deleted`, "error"))
 			getPersonList()
 		}
 	}
 
 
 	const updatePerson = () => {
-		if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
+		const updatedPerson = { name: newName, number: newNumber }
+		if (window.confirm(`${updatedPerson.name} is already added to the phonebook, replace old number with a new one?`)) {
 			personService
-				.update(getPersonId(newName), { name: newName, number: newNumber })
-			showNotification(`Updated ${newName}`, "success")
-			setNewName("")
-			setNewNumber("")
+				.update(getPersonId(updatedPerson.name), updatedPerson)
+				.then(res => {
+					showNotification(`Updated ${updatedPerson.name}`, "success"),
+						setNewName(""),
+						setNewNumber("")
+				})
+				.catch(error => showNotification(`${updatedPerson.name} has already been deleted`, "error"))
 			getPersonList()
 		}
 	}

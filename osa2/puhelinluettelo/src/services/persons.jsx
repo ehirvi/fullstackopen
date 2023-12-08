@@ -8,22 +8,21 @@ const getAll = () => (
         .then(promise => promise.data)
 )
 
-
 const create = (newObject) => (
     axios
         .post(URL, newObject)
         .then(promise => promise.data)
 )
 
-const remove = (objectId) => (
+const remove = (id) => (
     axios
-        .delete(`${URL}/${objectId}`)
+        .delete(`${URL}/${id}`)
         .then(promise => promise)
 )
 
-const update = (personId, updatedObject) => (
+const update = (id, updatedObject) => (
     axios
-        .put(`${URL}/${personId}`, updatedObject)
+        .put(`${URL}/${id}`, updatedObject)
         .then(promise => promise.data)
 )
 
