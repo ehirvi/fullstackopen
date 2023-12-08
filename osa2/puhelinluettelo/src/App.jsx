@@ -38,12 +38,25 @@ const Persons = ({ personList, deletePerson }) => (
 )
 
 
+const Notification = ({ message }) => {
+	if (message === null) {
+		return null;
+	}
+
+	return (
+		<div className={message.status}>
+			{message.text}
+		</div>
+	)
+}
+
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [keyword, setKeyword] = useState('');
+	const [notificationMessage, setNotificationMessage] = useState(null);
 
 	useEffect(() => getPersonList, []);
 
@@ -86,6 +99,7 @@ const App = () => {
 				.create({ name: newName, number: newNumber })
 				.then(newPerson => {
 					setPersons(persons.concat(newPerson)),
+						showNotification(`Added ${newPerson.name}`, "success"),
 						setNewName(""),
 						setNewNumber("")
 				});
@@ -97,7 +111,8 @@ const App = () => {
 		if (window.confirm(`Delete ${deletedPerson.name}?`)) {
 			personService
 				.remove(deletedPerson.id)
-			setPersons(persons.filter(person => person.id !== deletedPerson.id));
+			showNotification(`Removed ${deletedPerson.name}`, "success")
+			getPersonList()
 		}
 	}
 
@@ -106,17 +121,27 @@ const App = () => {
 		if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
 			personService
 				.update(getPersonId(newName), { name: newName, number: newNumber })
-				.then(getPersonList)
+			showNotification(`Updated ${newName}`, "success")
+			setNewName("")
+			setNewNumber("")
+			getPersonList()
 		}
+	}
+
+	const showNotification = (text, status) => {
+		setNotificationMessage({ text, status })
+		setTimeout(() => setNotificationMessage(null), 5000)
 	}
 
 	const personList = persons.filter(person =>
 		person.name.toLowerCase()
 			.includes(keyword));
 
+
 	return (
 		<div>
 			<h1>Phonebook</h1>
+			<Notification message={notificationMessage} />
 			<Filter keyword={keyword} changeKeyword={handleKeywordChange} />
 			<h2>Add a new</h2>
 			<PersonForm onSubmit={addPerson} newName={newName} newNumber={newNumber} changeName={handleNameChange} changeNumber={handleNumberChange} />

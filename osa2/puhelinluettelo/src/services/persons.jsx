@@ -15,10 +15,11 @@ const create = (newObject) => (
         .then(promise => promise.data)
 )
 
-const remove = (objectId) => {
+const remove = (objectId) => (
     axios
         .delete(`${URL}/${objectId}`)
-}
+        .then(promise => promise)
+)
 
 const update = (personId, updatedObject) => (
     axios
