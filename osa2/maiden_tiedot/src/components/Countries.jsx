@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import CountryService from "../services/CountryService"
+import Weather from "./Weather"
 
 const InputField = ({ keyword, handleInputChange }) => {
     return (
@@ -30,6 +31,7 @@ const CountryDetails = ({ country }) => {
             <h3>languages:</h3>
             <ul>{Object.keys(country.languages).map((value, i) => <li key={value}>{country.languages[value]}</li>)}</ul>
             <img src={country.flags.png} alt={country.flags.alt} />
+            <Weather city={country.capital} />
         </>
     )
 }
