@@ -7,17 +7,18 @@ const InputField = ({ keyword, handleInputChange }) => {
     )
 }
 
-const CountryList = ({ list }) => {
+const CountryList = ({ list, setKeyword }) => {
     return (
         <>
             <ul>
                 {list.map(country =>
                     <li key={country.name.official}>
                         {country.name.common}
+                        <button style={{fontSize: 10}} onClick={() => setKeyword(country.name.common)}>show</button>
                     </li>)}
             </ul>
         </>
-    )
+    )   
 }
 
 const CountryDetails = ({ country }) => {
@@ -67,7 +68,7 @@ const Countries = () => {
                     <p>too many matches</p>
                     :
                     filteredCountries.length > 1 ?
-                        <CountryList list={filteredCountries} />
+                        <CountryList list={filteredCountries} setKeyword={setKeyword} />
                         :
                         filteredCountries.length == 1 ?
                             <CountryDetails country={filteredCountries[0]} />
