@@ -110,9 +110,11 @@ const App = () => {
 		if (window.confirm(`Delete ${deletedPerson.name}?`)) {
 			personService
 				.remove(deletedPerson.id)
-				.then(res => showNotification(`Removed ${deletedPerson.name}`, "success"))
+				.then(res => {
+					getPersonList(),
+						showNotification(`Removed ${deletedPerson.name}`, "success")
+				})
 				.catch(error => showNotification(`${deletedPerson.name} has already been deleted`, "error"))
-			getPersonList()
 		}
 	}
 
@@ -123,12 +125,12 @@ const App = () => {
 			personService
 				.update(getPersonId(updatedPerson.name), updatedPerson)
 				.then(res => {
-					showNotification(`Updated ${updatedPerson.name}`, "success"),
+					getPersonList(),
+						showNotification(`Updated ${updatedPerson.name}`, "success"),
 						setNewName(""),
 						setNewNumber("")
 				})
 				.catch(error => showNotification(`${updatedPerson.name} has already been deleted`, "error"))
-			getPersonList()
 		}
 	}
 
