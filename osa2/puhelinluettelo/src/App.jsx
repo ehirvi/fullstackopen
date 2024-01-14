@@ -58,7 +58,7 @@ const App = () => {
 	const [keyword, setKeyword] = useState('');
 	const [notificationMessage, setNotificationMessage] = useState(null);
 
-	useEffect(() => getPersonList, []);
+	useEffect(() => getPersonList(), []);
 
 	const getPersonList = () => {
 		personService
