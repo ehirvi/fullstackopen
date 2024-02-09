@@ -134,7 +134,7 @@ const App = () => {
 						setNewName(""),
 						setNewNumber("")
 				})
-				.catch(error => showNotification(`${updatedPerson.name} has already been deleted`, "error"))
+				.catch(error => showNotification(`Could not update ${updatedPerson.name}`, "error"))
 		}
 	}
 
