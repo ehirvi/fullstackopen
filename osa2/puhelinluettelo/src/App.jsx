@@ -101,7 +101,11 @@ const App = () => {
 						showNotification(`Added ${newPerson.name}`, "success"),
 						setNewName(""),
 						setNewNumber("")
-				});
+				})
+				.catch(err => {
+					showNotification(err.response.data.error, "error")
+					console.log(err.response.data.error)
+				})
 		}
 	}
 
