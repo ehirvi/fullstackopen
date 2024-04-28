@@ -1,1 +1,1 @@
-Submission repository for University fo Helsinki course Full Stack Open
+Submission repository for University of Helsinki course Full Stack Open
