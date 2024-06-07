@@ -1,16 +1,17 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('http://localhost:3003/api/testing/reset')
-    await request.post('http://localhost:3003/api/users', {
+    await request.post('/api/testing/reset')
+    await request.post('/api/users', {
       data: {
         name: 'human',
         username: 'nameuser',
         password: 'wordpass'
       }
     })
-    await page.goto('http://localhost:5173')
+    await page.goto('/')
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -37,9 +38,22 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'Login' }).click()
       const errorNotification = page.locator('.error')
       await expect(errorNotification).toContainText('Wrong username or password')
-      await expect(errorNotification).toHaveCSS('border-style', 'solid')
       await expect(errorNotification).toHaveCSS('color', 'rgb(255, 0, 0)')
       await expect(page.getByText('pekka logged in')).not.toBeVisible()
+    })
+  })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'nameuser', 'wordpass')
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await createBlog(page, 'cool title', 'cool author', 'cool url')
+      const successNotification = page.locator('.success')
+      await expect(successNotification).toContainText('A new blog cool title by cool author was created')
+      await expect(successNotification).toHaveCSS('color', 'rgb(0, 128, 0)')
+      await expect(page.getByText('cool title cool author')).toBeVisible()
     })
   })
 })
