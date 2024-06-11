@@ -55,7 +55,10 @@ const Blog = ({ blog, handleAddingLike, handleBlogDeletion, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div
+      style={blogStyle}
+      data-testid='blog'
+    >
       {blogInfo.title} {blogInfo.author}
       <button onClick={toggleVisibility}>{visible ? 'Hide' : 'View'}</button>
       {visible && fullInfo()}

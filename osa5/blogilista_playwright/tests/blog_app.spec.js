@@ -1,16 +1,11 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith, createBlog } = require('./helper')
+const { resetDatabase, createUser, loginWith, createBlog, populateDatabase } = require('./helper')
+
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post('/api/testing/reset')
-    await request.post('/api/users', {
-      data: {
-        name: 'human',
-        username: 'nameuser',
-        password: 'wordpass'
-      }
-    })
+    await resetDatabase(request)
+    await createUser(request, 'human', 'nameuser', 'wordpass')
     await page.goto('/')
   })
 
@@ -79,16 +74,23 @@ describe('Blog app', () => {
       await createBlog(page, 'cool title', 'cool author', 'cool url')
       await page.getByRole('button', { name: 'Logout' }).click()
 
-      await request.post('/api/users', {
-        data: {
-          name: 'pekka',
-          username: 'pekka',
-          password: 'salasana'
-        }
-      })
+      await createUser(request, 'pekka', 'pekka', 'salasana')
       await loginWith(page, 'pekka', 'salasana')
       await page.getByRole('button', { name: 'View' }).click()
       await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
     })
+  })
+
+  test('Blogs are in correct descending order', async ({ page, request }) => {
+    await populateDatabase(request)
+    await page.reload()
+    await loginWith(page, 'nameuser', 'wordpass')
+    // await page.waitForSelector('[data-testid="blog"]')
+    const firstBlog = page.getByTestId('blog').first()
+    const secondBlog = page.getByTestId('blog').nth(1)
+    const thirdBlog = page.getByTestId('blog').last()
+    
+    await expect(firstBlog).toContainText('most likes')
+    await expect(thirdBlog).toContainText('least likes')
   })
 })
