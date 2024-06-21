@@ -13,9 +13,13 @@ const AnecdoteList = () => {
     dispatch(addVote(id))
   }
 
+  const sortDescending = (anecdotes) => {
+    return anecdotes.toSorted((a, b) => b.votes - a.votes)
+  }
+
   return (
     <>
-      {anecdotes.map(anecdote =>
+      {sortDescending(anecdotes).map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
