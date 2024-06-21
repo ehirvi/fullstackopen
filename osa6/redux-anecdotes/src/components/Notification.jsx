@@ -7,11 +7,24 @@ const Notification = () => {
     padding: 10,
     borderWidth: 1
   }
-  return (
-    <div style={style}>
-      {notification}
-    </div>
-  )
-}
 
+  const isEmpty = () => {
+    return notification === ''
+  }
+
+  const showNotification = () => {
+    return (
+      <div style={style}>
+        {notification}
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {isEmpty() ? null : showNotification()}
+    </>
+  )
+
+}
 export default Notification
