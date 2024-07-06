@@ -4,11 +4,16 @@ import Blogs from './components/Blogs'
 import loginService from './services/loginService'
 import blogService from './services/blogService'
 import './App.css'
+import { useDispatch } from 'react-redux'
+import {
+  setNotification,
+  showNotification,
+} from './reducers/notificationReducer'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const dispatch = useDispatch()
 
   const blogFormRef = useRef()
 
@@ -18,7 +23,12 @@ const App = () => {
         const blogs = await blogService.getAll()
         setBlogs(blogs)
       } catch (err) {
-        showNotification('Could not connect to the server', 'error')
+        dispatch(
+          showNotification({
+            text: 'Could not connect to the server',
+            status: 'error',
+          }),
+        )
       }
     }
     getAllBlogs()
@@ -40,7 +50,12 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (err) {
-      showNotification('Wrong username or password', 'error')
+      dispatch(
+        showNotification({
+          text: 'Wrong username or password',
+          status: 'error',
+        }),
+      )
     }
   }
 
@@ -62,12 +77,19 @@ const App = () => {
         },
       }
       setBlogs(blogs.concat(savedBlog))
-      showNotification(
-        `A new blog ${savedBlog.title} by ${savedBlog.author} was created`,
-        'success',
+      dispatch(
+        showNotification({
+          text: `A new blog ${savedBlog.title} by ${savedBlog.author} was created`,
+          status: 'success',
+        }),
       )
     } catch (err) {
-      showNotification('Failed to create a new blog', 'error')
+      dispatch(
+        showNotification({
+          text: 'Failed to create a new blog',
+          status: 'error',
+        }),
+      )
       // console.log(err)
     }
   }
@@ -76,7 +98,12 @@ const App = () => {
     try {
       const updatedBlog = await blogService.like(blog, likes)
     } catch (err) {
-      showNotification('Blog might have already been deleted', 'error')
+      dispatch(
+        showNotification({
+          text: 'Blog might have already been deleted',
+          status: 'error',
+        }),
+      )
       // console.log(err)
     }
   }
@@ -86,30 +113,26 @@ const App = () => {
       await blogService.remove(deletedBlog)
       const updatedBlogList = blogs.filter((blog) => blog.id !== deletedBlog.id)
       setBlogs(updatedBlogList)
-      showNotification(
-        `Blog ${deletedBlog.title} by ${deletedBlog.author} was succesfully removed`,
-        'success',
+      dispatch(
+        showNotification({
+          text: `Blog ${deletedBlog.title} by ${deletedBlog.author} was succesfully removed`,
+          status: 'success',
+        }),
       )
     } catch (err) {
-      showNotification('Could not remove blog due to error', 'error')
-      console.log(err)
+      dispatch(
+        showNotification({
+          text: 'Could not remove blog due to error',
+          status: 'error',
+        }),
+      )
+      // console.log(err)
     }
-  }
-
-  const showNotification = (text, status) => {
-    setNotification({ text, status })
-    setTimeout(() => setNotification(null), 5000)
   }
 
   return (
     <div>
-      {!user && (
-        <LoginForm
-          handleLogin={handleLogin}
-          showNotification={showNotification}
-          notification={notification}
-        />
-      )}
+      {!user && <LoginForm handleLogin={handleLogin} />}
       {user && (
         <Blogs
           blogs={blogs}
@@ -118,8 +141,6 @@ const App = () => {
           handleBlogCreation={handleBlogCreation}
           handleBlogDeletion={handleBlogDeletion}
           handleAddingLike={handleAddingLike}
-          showNotification={showNotification}
-          notification={notification}
           blogFormRef={blogFormRef}
         />
       )}

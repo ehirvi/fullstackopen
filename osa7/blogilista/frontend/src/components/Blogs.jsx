@@ -10,7 +10,6 @@ const Blogs = ({
   handleBlogCreation,
   handleBlogDeletion,
   handleAddingLike,
-  notification,
   blogFormRef,
 }) => {
   const sortedBlogs = () => blogs.sort((a, b) => b.likes - a.likes)
@@ -18,7 +17,7 @@ const Blogs = ({
   return (
     <>
       <h2>Blogs</h2>
-      <Notification notification={notification} />
+      <Notification />
       <div>
         {user.name} logged in
         <button onClick={handleLogout}>Logout</button>
