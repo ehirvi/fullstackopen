@@ -1,18 +1,18 @@
+import { useSelector } from 'react-redux'
 import Blog from './Blog'
 import CreateBlogForm from './CreateBlogForm'
 import Notification from './Notification'
 import Togglable from './Togglable'
 
 const Blogs = ({
-  blogs,
   user,
   handleLogout,
-  handleBlogCreation,
   handleBlogDeletion,
   handleAddingLike,
   blogFormRef,
 }) => {
-  const sortedBlogs = () => blogs.sort((a, b) => b.likes - a.likes)
+  const blogs = useSelector(state => state.blogs)
+  const sortedBlogs = () => blogs.toSorted((a, b) => b.likes - a.likes)
 
   return (
     <>
@@ -24,7 +24,7 @@ const Blogs = ({
       </div>
       <br />
       <Togglable buttonLabel='New blog' ref={blogFormRef}>
-        <CreateBlogForm handleBlogCreation={handleBlogCreation} />
+        <CreateBlogForm user={user} blogFormRef={blogFormRef} />
       </Togglable>
       <br />
       {sortedBlogs().map((blog) => (
