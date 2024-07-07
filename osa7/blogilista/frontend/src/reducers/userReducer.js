@@ -1,55 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit'
-import loginService from '../services/loginService'
-import blogService from '../services/blogService'
+import userService from '../services/userService'
+import { showNotification } from './notificationReducer'
 
 const userSlice = createSlice({
-  name: 'user',
-  initialState: null,
+  name: 'users',
+  initialState: [],
   reducers: {
-    setUser: (state, action) => {
+    setUsers: (state, action) => {
       return action.payload
-    },
-    clearUser: (state) => {
-      return null
     },
   },
 })
 
-export const { setUser, clearUser } = userSlice.actions
+export const { setUsers } = userSlice.actions
 
-export const getUser = () => {
-  return (dispatch) => {
-    const loggedUserJSON = window.localStorage.getItem('loggedUser')
-    if (loggedUserJSON) {
-      const loggedUser = JSON.parse(loggedUserJSON)
-      dispatch(setUser(loggedUser))
-      blogService.setToken(loggedUser.token)
-    }
-  }
-}
-
-export const loginUser = (credentials) => {
+export const getUsers = () => {
   return async (dispatch) => {
     try {
-      const user = await loginService.login(credentials)
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      dispatch(setUser(user))
+      const users = await userService.getAll()
+      dispatch(setUsers(users))
     } catch (error) {
       dispatch(
         showNotification({
-          text: 'Wrong username or password',
-          status: 'error',
+          text: 'Could not connect to the server',
+          type: 'error',
         }),
       )
     }
-  }
-}
-
-export const logoutUser = () => {
-  return dispatch => {
-    window.localStorage.removeItem('loggedUser')
-    dispatch(clearUser())
   }
 }
 
