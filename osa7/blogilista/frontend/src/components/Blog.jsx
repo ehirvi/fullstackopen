@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { deleteBlog, likeBlog, removeBlog } from '../reducers/blogReducer'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, loggedUser }) => {
   const [visible, setVisible] = useState(false)
   const [blogInfo, setBlogInfo] = useState(blog)
   const [blogCreator, setblogCreator] = useState(blog.user)
@@ -35,8 +35,8 @@ const Blog = ({ blog, user }) => {
     }
   }
 
-  const checkUser = () => {
-    return blogCreator.username === user.username
+  const isUserSame = () => {
+    return blogCreator.username === loggedUser.username
   }
 
   const fullInfo = () => {
@@ -48,7 +48,7 @@ const Blog = ({ blog, user }) => {
           <button onClick={handleLike}>Like</button>
         </div>
         <div>{blogCreator.name}</div>
-        {checkUser() && (
+        {isUserSame() && (
           <div>
             <button onClick={handleDelete}>Remove</button>
           </div>
@@ -68,7 +68,7 @@ const Blog = ({ blog, user }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
+  loggedUser: PropTypes.object.isRequired,
 }
 
 export default Blog
