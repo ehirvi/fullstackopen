@@ -3,15 +3,15 @@ import Blog from './Blog'
 import CreateBlogForm from './CreateBlogForm'
 import Notification from './Notification'
 import Togglable from './Togglable'
+import { useRef } from 'react'
 
 const Blogs = ({
   user,
   handleLogout,
-  handleBlogDeletion,
-  handleAddingLike,
-  blogFormRef,
 }) => {
   const blogs = useSelector(state => state.blogs)
+  const blogFormRef = useRef()
+
   const sortedBlogs = () => blogs.toSorted((a, b) => b.likes - a.likes)
 
   return (
@@ -31,8 +31,6 @@ const Blogs = ({
         <Blog
           key={blog.id}
           blog={blog}
-          handleAddingLike={handleAddingLike}
-          handleBlogDeletion={handleBlogDeletion}
           user={user}
         />
       ))}

@@ -35,11 +35,11 @@ const like = async (blog, likes) => {
   return res.data
 }
 
-const remove = async (oldBlog) => {
+const remove = async (blogToDelete) => {
   const config = {
     headers: { Authorization: token },
   }
-  const res = await axios.delete(`${baseUrl}/${oldBlog.id}`, config)
+  const res = await axios.delete(`${baseUrl}/${blogToDelete.id}`, config)
   return res
 }
 
