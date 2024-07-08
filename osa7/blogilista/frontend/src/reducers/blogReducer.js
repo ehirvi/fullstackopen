@@ -44,7 +44,7 @@ export const getBlogs = () => {
   }
 }
 
-export const createBlog = (title, author, url, user, blogFormRef) => {
+export const createBlog = (title, author, url, blogFormRef) => {
   return async (dispatch) => {
     try {
       blogFormRef.current.toggleVisibility()
@@ -54,18 +54,10 @@ export const createBlog = (title, author, url, user, blogFormRef) => {
         url,
       }
       const newBlog = await blogService.create(blog)
-      const savedBlog = {
-        ...newBlog,
-        user: {
-          id: newBlog.user,
-          username: user.username,
-          name: user.name,
-        },
-      }
-      dispatch(concatBlog(savedBlog))
+      dispatch(concatBlog(newBlog))
       dispatch(
         showNotification({
-          text: `A new blog ${savedBlog.title} by ${savedBlog.author} was created`,
+          text: `A new blog ${newBlog.title} by ${newBlog.author} was created`,
           status: 'success',
         }),
       )

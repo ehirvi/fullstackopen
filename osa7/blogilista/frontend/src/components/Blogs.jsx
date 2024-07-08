@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { BrowserRouter, Route, Routes, useMatch } from 'react-router-dom'
-import Blog from './Blog'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import CreateBlogForm from './CreateBlogForm'
 import Notification from './Notification'
 import Togglable from './Togglable'
@@ -8,6 +7,7 @@ import { useRef } from 'react'
 import { logoutUser } from '../reducers/loginReducer'
 import Users from './Users'
 import User from './User'
+import Blog from './Blog'
 
 const Blogs = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -19,6 +19,15 @@ const Blogs = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser())
+  }
+
+  const blogStyle = {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
   }
 
   return (
@@ -41,11 +50,14 @@ const Blogs = () => {
                 </Togglable>
                 <br />
                 {sortedBlogs().map((blog) => (
-                  <Blog key={blog.id} blog={blog} loggedUser={user} />
+                  <div key={blog.id} style={blogStyle}>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </div>
                 ))}
               </>
             }
           />
+          <Route path='/blogs/:blogId' element={<Blog />} />
           <Route path='/users' element={<Users />} />
           <Route path='/users/:userId' element={<User />} />
         </Routes>

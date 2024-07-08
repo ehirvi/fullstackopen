@@ -21,7 +21,8 @@ blogsRouter.post('/', tokenExtractor, userExtractor, async (req, res, next) => {
     const savedBlog = await newBlog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
-    res.status(201).json(savedBlog)
+    const populatedBlog = await savedBlog.populate('user', { blogs: 0 })
+    res.status(201).json(populatedBlog)
   } catch (err) {
     next(err)
   }
@@ -78,7 +79,8 @@ blogsRouter.put(
         editedBlog,
         { new: true },
       )
-      res.status(200).json(updatedBlog)
+      const populatedBlog = await updatedBlog.populate('user', { blogs: 0 })
+      res.status(200).json(populatedBlog)
     } catch (err) {
       next(err)
     }
