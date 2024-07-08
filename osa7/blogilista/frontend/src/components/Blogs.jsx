@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useMatch } from 'react-router-dom'
 import Blog from './Blog'
 import CreateBlogForm from './CreateBlogForm'
 import Notification from './Notification'
@@ -7,6 +7,7 @@ import Togglable from './Togglable'
 import { useRef } from 'react'
 import { logoutUser } from '../reducers/loginReducer'
 import Users from './Users'
+import User from './User'
 
 const Blogs = () => {
   const blogs = useSelector((state) => state.blogs)
@@ -46,6 +47,7 @@ const Blogs = () => {
             }
           />
           <Route path='/users' element={<Users />} />
+          <Route path='/users/:userId' element={<User />} />
         </Routes>
       </BrowserRouter>
     </>
