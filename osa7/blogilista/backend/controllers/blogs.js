@@ -16,6 +16,7 @@ blogsRouter.post('/', tokenExtractor, userExtractor, async (req, res, next) => {
       author: body.author,
       url: body.url,
       likes: body.likes,
+      comments: [],
       user: user._id,
     })
     const savedBlog = await newBlog.save()
@@ -65,6 +66,7 @@ blogsRouter.put(
         author: req.body.author,
         url: req.body.url,
         likes: req.body.likes,
+        comments: req.body.comments,
         user: req.body.user,
       }
       const blogToEdit = await Blog.findById(req.params.id)
@@ -86,5 +88,18 @@ blogsRouter.put(
     }
   },
 )
+
+blogsRouter.post('/:id/comments', async (req, res, next) => {
+  try {
+    const comment = req.body.comment
+    const blog = await Blog.findById(req.params.id)
+    blog.comments = blog.comments.concat(comment)
+    const updatedBlog = await blog.save()
+    const populatedBlog = await updatedBlog.populate('user', { blogs: 0 })
+    res.status(201).json(populatedBlog)
+  } catch (err) {
+    next(err)
+  }
+})
 
 module.exports = blogsRouter
