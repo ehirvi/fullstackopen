@@ -27,7 +27,7 @@ const Blogs = () => {
   return (
     <>
       <Navigation />
-      <h2>Blog app</h2>
+      <h2 className='font-mono'>Blog app</h2>
       <Notification />
       <br />
       <Routes>

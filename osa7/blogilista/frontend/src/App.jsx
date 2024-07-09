@@ -18,7 +18,7 @@ const App = () => {
   }, [])
 
   return (
-    <div>
+    <div className='flex flex-col'>
       {!user && <LoginForm />}
       {user && <Blogs />}
     </div>

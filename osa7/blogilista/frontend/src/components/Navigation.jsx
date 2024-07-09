@@ -5,28 +5,21 @@ import { logoutUser } from '../reducers/loginReducer'
 const Navigation = () => {
   const user = useSelector((state) => state.user)
   const dispatch = useDispatch()
-  
-  const navBarStyle = {
-    backgroundColor: 'lightGrey',
-  }
-  const navItemStyle = {
-    margin: 5,
-  }
 
   const handleLogout = () => {
     dispatch(logoutUser())
   }
 
   return (
-    <div style={navBarStyle}>
-      <Link style={navItemStyle} to='/'>
+    <div className='bg-indigo-300 flex flex justify-center'>
+      <Link className='m-5 font-sans hover:text-white active:text-black'  to='/'>
         Blogs
       </Link>
-      <Link style={navItemStyle} to='/users'>
+      <Link className='m-5 font-sans hover:text-white active:text-black'  to='/users'>
         Users
       </Link>
-      {user.name} logged in
-      <button onClick={handleLogout} style={navItemStyle}>
+      <p className='m-5 font-sans font-bold'>{user.name} logged in</p>
+      <button className='m-5 px-2 rounded font-sans bg-red-500 text-white hover:bg-white hover:text-black active:bg-indigo-300' onClick={handleLogout}>
         Logout
       </button>
     </div>
