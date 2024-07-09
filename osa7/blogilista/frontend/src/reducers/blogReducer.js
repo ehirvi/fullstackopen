@@ -75,12 +75,39 @@ export const createBlog = (title, author, url, blogFormRef) => {
 export const likeBlog = (blog, likes) => {
   return async (dispatch) => {
     try {
-      const updatedBlog = await blogService.like(blog, likes)
+      const blogToUpdate = {
+        ...blog,
+        likes: likes,
+        user: blog.user.id,
+      }
+      const updatedBlog = await blogService.like(blogToUpdate)
       dispatch(updateBlog(updatedBlog))
     } catch (error) {
       dispatch(
         showNotification({
           text: 'Blog might have already been deleted',
+          status: 'error',
+        }),
+      )
+    }
+  }
+}
+
+export const commentBlog = (blog, comment) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.comment(blog, comment)
+      dispatch(updateBlog(updatedBlog))
+      dispatch(
+        showNotification({
+          text: 'Comment added',
+          status: 'success',
+        }),
+      )
+    } catch (error) {
+      dispatch(
+        showNotification({
+          text: 'Could not comment due to error',
           status: 'error',
         }),
       )

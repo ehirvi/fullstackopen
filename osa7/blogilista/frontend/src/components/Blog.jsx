@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { useNavigate, useParams } from 'react-router-dom'
+import CommentForm from './CommentForm'
 
 const Blog = () => {
   const { blogId } = useParams()
@@ -47,12 +48,7 @@ const Blog = () => {
           <button onClick={handleDelete}>Remove</button>
         </div>
       )}
-      <h3>Comments</h3>
-      <ul>
-        {blog.comments.map((comment, _) => (
-          <li key={_}>{comment}</li>
-        ))}
-      </ul>
+      <CommentForm blog={blog} />
     </div>
   )
 }
