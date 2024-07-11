@@ -33,21 +33,35 @@ const Blog = () => {
   }
 
   return (
-    <div data-testid='blog'>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
-      <a href={blog.url}>{blog.url}</a>
-      <div>
-        {blog.likes} likes
-        <button onClick={handleLike}>Like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
-      {isUserCreator() && (
-        <div>
-          <button onClick={handleDelete}>Remove</button>
+    <div className='flex flex-col self-center items-center' data-testid='blog'>
+      <div className='flex flex-col'>
+        <h2 className='text-lg'>
+          {blog.title} {blog.author}
+        </h2>
+        <a className='underline hover:text-yellow-500' href={blog.url}>
+          {blog.url}
+        </a>
+        <div className='flex items-center'>
+          <p>{blog.likes} likes</p>
+          <button
+            className='py-1 px-3 m-2 bg-sky-500 text-white text-sm shadow-md hover:bg-sky-700 rounded duration-150'
+            onClick={handleLike}
+          >
+            Like
+          </button>
         </div>
-      )}
+        <div>added by {blog.user.name}</div>
+        {isUserCreator() && (
+          <div>
+            <button
+              className='py-1 px-3 my-2 bg-red-500 text-white text-sm shadow-md hover:bg-red-700 rounded duration-150'
+              onClick={handleDelete}
+            >
+              Remove
+            </button>
+          </div>
+        )}
+      </div>
       <CommentForm blog={blog} />
     </div>
   )

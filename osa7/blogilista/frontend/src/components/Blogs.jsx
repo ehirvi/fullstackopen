@@ -16,41 +16,42 @@ const Blogs = () => {
   const sortedBlogs = () => blogs.toSorted((a, b) => b.likes - a.likes)
 
   const blogStyle = {
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
+    className:
+      'p-2 m-2 min-w-full border-2 border-black rounded hover:ring-2 hover:ring-sky-500 duration-150',
   }
 
   return (
     <>
       <Navigation />
-      <h2 className='font-mono'>Blog app</h2>
+      <h2 className='flex justify-center my-5 text-2xl font-bold'>BLOG APP</h2>
       <Notification />
-      <br />
-      <Routes>
-        <Route
-          path='/'
-          element={
-            <>
-              <Togglable buttonLabel='New blog' ref={blogFormRef}>
-                <CreateBlogForm blogFormRef={blogFormRef} />
-              </Togglable>
-              <br />
-              {sortedBlogs().map((blog) => (
-                <div key={blog.id} style={blogStyle}>
-                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      <div className='flex flex-col'>
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <>
+                <Togglable buttonLabel='New blog' ref={blogFormRef}>
+                  <CreateBlogForm blogFormRef={blogFormRef} />
+                </Togglable>
+                <br />
+                <div className='flex flex-col self-center items-center w-fit'>
+                  {sortedBlogs().map((blog) => (
+                    <div key={blog.id} {...blogStyle}>
+                      <Link to={`/blogs/${blog.id}`}>
+                        <p>{blog.title}</p>
+                      </Link>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </>
-          }
-        />
-        <Route path='/blogs/:blogId' element={<Blog />} />
-        <Route path='/users' element={<Users />} />
-        <Route path='/users/:userId' element={<User />} />
-      </Routes>
+              </>
+            }
+          />
+          <Route path='/blogs/:blogId' element={<Blog />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='/users/:userId' element={<User />} />
+        </Routes>
+      </div>
     </>
   )
 }

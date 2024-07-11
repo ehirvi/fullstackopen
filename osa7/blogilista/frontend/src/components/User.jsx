@@ -12,10 +12,10 @@ const User = () => {
   }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
+    <div className='flex flex-col items-center'>
+      <h2 className='text-xl font-bold'>{user.name}</h2>
+      <h3 className='text-lg font-bold'>Added blogs</h3>
+      <ul className='list-disc'>
         {user.blogs.map((blog) => (
           <li key={blog.id}>{blog.title}</li>
         ))}

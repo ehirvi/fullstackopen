@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import loginService from '../services/loginService'
 import blogService from '../services/blogService'
+import { showNotification } from './notificationReducer'
 
 const loginSlice = createSlice({
   name: 'user',

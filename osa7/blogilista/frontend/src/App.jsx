@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import LoginForm from './components/LoginForm'
 import Blogs from './components/Blogs'
-import './App.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { getBlogs } from './reducers/blogReducer'
 import { getUser } from './reducers/loginReducer'
@@ -18,7 +17,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className='flex flex-col'>
+    <div className='font-mono'>
       {!user && <LoginForm />}
       {user && <Blogs />}
     </div>

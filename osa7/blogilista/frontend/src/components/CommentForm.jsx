@@ -13,19 +13,25 @@ const CommentForm = ({ blog }) => {
   }
 
   return (
-    <div>
-      <h3>Comments</h3>
+    <div className='flex flex-col items-center'>
+      <h3 className='text-xl'>Comments</h3>
       <form onSubmit={handleComment}>
         <input
+          className='p-1 m-1 border border-gray-400 shadow-inner focus:outline-none focus:border-blue-500 focus:ring-1 rounded'
           type='text'
           value={comment}
           onChange={({ target }) => setComment(target.value)}
         ></input>
-        <button type='submit'>add comment</button>
+        <button
+          className='py-1 px-3 m-2 bg-green-500 text-white text-lg shadow-md hover:bg-green-700 rounded duration-150'
+          type='submit'
+        >
+          Add comment
+        </button>
       </form>
       <ul>
         {blog.comments.map((comment, index) => (
-          <li key={index}>{comment}</li>
+          <li className='list-disc list-inside' key={index}>{comment}</li>
         ))}
       </ul>
     </div>
