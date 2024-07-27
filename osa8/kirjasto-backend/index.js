@@ -5,6 +5,7 @@ mongoose.set("strictQuery", false);
 const Author = require("./models/author");
 const Book = require("./models/book");
 const author = require("./models/author");
+const { GraphQLError } = require("graphql");
 require("dotenv").config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -75,22 +76,41 @@ const resolvers = {
 
   Mutation: {
     addBook: async (root, args) => {
-      try {
-        let authorFound = await Author.findOne({ name: args.author });
-        if (!authorFound) {
-          const newAuthor = new Author({
-            name: args.author,
-          });
+      let authorFound = await Author.findOne({ name: args.author });
+      if (!authorFound) {
+        const newAuthor = new Author({
+          name: args.author,
+        });
+        try {
           authorFound = await newAuthor.save();
+        } catch (error) {
+          throw new GraphQLError(
+            "Author name must be at least 4 characters long",
+            {
+              extensions: {
+                code: "BAD_USER_INPUT",
+                invalidArgs: args.author,
+                error,
+              },
+            }
+          );
         }
-        const book = {
-          ...args,
-          author: authorFound,
-        };
+      }
+      const book = {
+        ...args,
+        author: authorFound,
+      };
+      try {
         const savedBook = await new Book({ ...book }).save();
         return savedBook;
-      } catch (err) {
-        return null;
+      } catch (error) {
+        throw new GraphQLError("Book name must be at least 5 characters long", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.title,
+            error,
+          },
+        });
       }
     },
     editAuthor: async (root, args) => {
@@ -102,7 +122,7 @@ const resolvers = {
         authorToEdit.born = args.setBornTo;
         const editedAuthor = await authorToEdit.save();
         return editedAuthor;
-      } catch (err) {
+      } catch (error) {
         return null;
       }
     },
