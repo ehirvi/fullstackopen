@@ -5,6 +5,7 @@ mongoose.set("strictQuery", false);
 const Author = require("./models/author");
 const Book = require("./models/book");
 const User = require("./models/user");
+const Genre = require("./models/genre");
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -31,12 +32,17 @@ const typeDefs = `
     published: Int!
     author: Author!
     id: ID!
-    genres: [String!]!
+    genres: [Genre!]!
+  }
+
+  type Genre {
+    name: String!
+    id: ID!
   }
 
   type User {
     username: String!
-    favoriteGenre: String!
+    favoriteGenre: Genre!
     id: ID!
   }
 
@@ -49,6 +55,7 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    allGenres: [Genre!]!
     me: User
   }
 
@@ -85,12 +92,16 @@ const resolvers = {
         books = books.find({ author: authorFound });
       }
       if (args.genre) {
-        books = books.find({ genres: { $in: args.genre } });
+        const genre = await Genre.findOne({ name: args.genre });
+        books = books.find({ genres: { $in: genre } });
       }
-      return books.populate("author");
+      return books.populate("author").populate({ path: "genres" });
     },
     allAuthors: async () => {
       return Author.find({});
+    },
+    allGenres: async () => {
+      return Genre.find({});
     },
     me: (root, args, context) => {
       return context.currentUser;
@@ -126,13 +137,22 @@ const resolvers = {
           );
         }
       }
+      let genres = [];
+      for (let genre of args.genres) {
+        let genreFound = await Genre.findOne({ name: genre });
+        if (!genreFound) {
+          genreFound = await new Genre({ name: genre }).save();
+        }
+        genres = genres.concat(genreFound._id);
+      }
       const book = {
         ...args,
+        genres,
         author: authorFound,
       };
       try {
         const savedBook = await new Book({ ...book }).save();
-        return savedBook;
+        return savedBook.populate({ path: "genres" });
       } catch (error) {
         throw new GraphQLError("Book name must be at least 5 characters long", {
           extensions: {
@@ -164,7 +184,11 @@ const resolvers = {
       }
     },
     createUser: async (root, args) => {
-      const user = new User({ ...args });
+      let genreFound = await Genre.findOne({ name: args.favoriteGenre });
+      if (!genreFound) {
+        genreFound = await new Genre({ name: args.favoriteGenre }).save();
+      }
+      const user = new User({ ...args, favoriteGenre: genreFound });
       try {
         const savedUser = await user.save();
         return savedUser;
