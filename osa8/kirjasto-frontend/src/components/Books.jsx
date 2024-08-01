@@ -24,7 +24,7 @@ const Books = (props) => {
 
   return (
     <div>
-      <h2>books</h2>
+      <h1>books</h1>
       <p>
         showing genre: <b>{shownGenre}</b>
       </p>

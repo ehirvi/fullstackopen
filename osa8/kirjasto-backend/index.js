@@ -104,7 +104,7 @@ const resolvers = {
       return Genre.find({});
     },
     me: (root, args, context) => {
-      return context.currentUser;
+      return context.currentUser.populate("favoriteGenre");
     },
   },
 
