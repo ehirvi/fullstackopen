@@ -3,13 +3,58 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import Recommended from "./components/Recommended";
+import { ALL_AUTHORS, ALL_BOOKS, ALL_GENRES, BOOK_ADDED } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState("");
   const client = useApolloClient();
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = data.data.bookAdded;
+      alert(`New book ${addedBook.title} added`);
+      client.cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre: "" } },
+        ({ allBooks }) => {
+          return {
+            allBooks: allBooks.concat(addedBook),
+          };
+        }
+      );
+      const author = addedBook.author;
+      client.cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        if (!allAuthors.find((a) => a.name === author.name)) {
+          return {
+            allAuthors: allAuthors.concat(author),
+          };
+        }
+      });
+      addedBook.genres.map((g) => {
+        client.cache.updateQuery(
+          { query: ALL_GENRES, variables: { name: g.name } },
+          ({ allGenres }) => {
+            if (!allGenres.find((genre) => genre.name === g.name)) {
+              return {
+                allGenres: allGenres.concat(g),
+              };
+            }
+          }
+        ),
+          client.cache.updateQuery(
+            { query: ALL_BOOKS, variables: { genre: g.name } },
+            (data) => {
+              if (data) {
+                return {
+                  allBooks: data.allBooks.concat(addedBook),
+                };
+              }
+            }
+          );
+      });
+    },
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("user-token");
