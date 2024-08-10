@@ -2,7 +2,7 @@ const Author = require("./models/author");
 const Book = require("./models/book");
 const User = require("./models/user");
 const Genre = require("./models/genre");
-const { GraphQLError, subscribe } = require("graphql");
+const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
 const { PubSub } = require("graphql-subscriptions");
 const pubsub = new PubSub();
@@ -21,7 +21,7 @@ const resolvers = {
         const genre = await Genre.findOne({ name: args.genre });
         books = books.find({ genres: { $in: genre } });
       }
-      return books.populate("author").populate({ path: "genres" });
+      return books.populate(["author", "genres"]);
     },
     allAuthors: async () => {
       return Author.find({});
@@ -47,6 +47,7 @@ const resolvers = {
       if (!authorFound) {
         const newAuthor = new Author({
           name: args.author,
+          books: [],
         });
         try {
           authorFound = await newAuthor.save();
@@ -74,10 +75,15 @@ const resolvers = {
       const book = new Book({
         ...args,
         genres,
-        author: authorFound,
+        author: authorFound._id,
       });
       try {
-        await book.save();
+        const savedBook = await book.save();
+        authorFound.books = authorFound.books.concat(savedBook._id);
+        await authorFound.save();
+        const populatedBook = await savedBook.populate(["author", "genres"]);
+        pubsub.publish("BOOK_ADDED", { bookAdded: populatedBook });
+        return populatedBook;
       } catch (error) {
         throw new GraphQLError("Book name must be at least 5 characters long", {
           extensions: {
@@ -87,9 +93,6 @@ const resolvers = {
           },
         });
       }
-      const populatedBook = book.populate({path: "genres"})
-      pubsub.publish("BOOK_ADDED", { bookAdded: populatedBook });
-      return populatedBook
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser) {
@@ -158,8 +161,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const authorsBooks = await Book.find({ author: root.id });
-      return authorsBooks.length;
+      return root.books.length;
     },
   },
 };
