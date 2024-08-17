@@ -37,13 +37,17 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-try {
-  const { height, weight } = parseArguments(process.argv);
-  console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-  let errorMessage = "An error has occured:";
-  if (error instanceof Error) {
-    errorMessage += ` ${error.message}`;
+if (require.main === module) {
+  try {
+    const { height, weight } = parseArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error: unknown) {
+    let errorMessage = "An error has occured:";
+    if (error instanceof Error) {
+      errorMessage += ` ${error.message}`;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
+
+export default { calculateBmi };
