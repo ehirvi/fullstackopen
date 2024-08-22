@@ -22,7 +22,7 @@ const parseArguments = (args: string[]): ParsedList => {
 
   const parsedArgs = args.slice(2).map((a) => Number(a));
 
-  for (let arg of parsedArgs) {
+  for (const arg of parsedArgs) {
     if (isNotNumber(arg)) {
       throw new Error("Provided values were not numbers");
     }
