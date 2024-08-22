@@ -63,13 +63,17 @@ const calculateExercises = (
   };
 };
 
-try {
-  const { dailyExerciseHours, targetAmount } = parseArguments(process.argv);
-  console.log(calculateExercises(dailyExerciseHours, targetAmount));
-} catch (error: unknown) {
-  let errorMessage = "An error has occured:";
-  if (error instanceof Error) {
-    errorMessage += ` ${error.message}`;
+if (require.main === module) {
+  try {
+    const { dailyExerciseHours, targetAmount } = parseArguments(process.argv);
+    console.log(calculateExercises(dailyExerciseHours, targetAmount));
+  } catch (error: unknown) {
+    let errorMessage = "An error has occured:";
+    if (error instanceof Error) {
+      errorMessage += ` ${error.message}`;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
+
+export default { calculateExercises };

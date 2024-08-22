@@ -1,7 +1,10 @@
 import express from "express";
 import bmiCalculator from "./bmiCalculator";
 import { isNotNumber } from "./utils";
+import exerciseCalculator from "./exerciseCalculator";
 const app = express();
+
+app.use(express.json());
 
 app.set("query parser", "extended");
 
@@ -27,6 +30,33 @@ app.get("/bmi", (req, res) => {
     height,
     bmi,
   };
+  return res.json(result);
+});
+
+app.post("/exercises", (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
+  const data: any = req.body;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (!data.daily_exercises || !data.target) {
+    return res.status(400).json({ error: "parameters missing" });
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (isNotNumber(data.target)) {
+    return res.status(400).json({ error: "malformatted parameters" });
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  for (const day of data.daily_exercises) {
+    if (isNotNumber(day)) {
+      return res.status(400).json({ error: "malformatted parameters" });
+    }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+  const daily_exercises: number[] = data.daily_exercises;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+  const target: number = data.target;
+
+  const result = exerciseCalculator.calculateExercises(daily_exercises, target);
   return res.json(result);
 });
 
