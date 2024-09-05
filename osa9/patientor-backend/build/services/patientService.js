@@ -14,8 +14,8 @@ const getNonSensitiveEntries = () => {
         occupation,
     }));
 };
-const addNewPatient = (patientData) => {
-    const newPatient = Object.assign({ id: (0, uuid_1.v1)() }, patientData);
+const addNewPatient = (patientEntry) => {
+    const newPatient = Object.assign({ id: (0, uuid_1.v1)() }, patientEntry);
     patients_1.default.push(newPatient);
     return newPatient;
 };
