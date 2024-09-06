@@ -1,9 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+// import { Patient } from "../types/types";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = __importDefault(require("../utils"));
 const data = [
     {
         id: "d2773336-f723-11e9-8f0b-362b9e155667",
@@ -46,9 +43,9 @@ const data = [
         occupation: "Digital evangelist",
     },
 ];
-const patientEntries = data.map((entry) => {
-    const object = (0, utils_1.default)(entry);
-    object.id = entry.id;
-    return object;
-});
-exports.default = patientEntries;
+// const patientEntries: Patient[] = data.map((entry) => {
+//   const object = toNewPatientEntry(entry) as Patient;
+//   object.id = entry.id;
+//   return object;
+// });
+exports.default = data;

@@ -3,13 +3,16 @@ import data from "../data/patients";
 import { v1 as uuid } from "uuid";
 
 const getNonSensitiveEntries = (): NonSensitivePatientData[] => {
-  return data.map(({ id, name, dateOfBirth, gender, occupation }) => ({
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    occupation,
-  }));
+  return data.map(
+    ({ id, name, dateOfBirth, gender, occupation }) =>
+      ({
+        id,
+        name,
+        dateOfBirth,
+        gender,
+        occupation,
+      } as NonSensitivePatientData)
+  );
 };
 
 const addNewPatient = (patientEntry: NewPatient): Patient => {

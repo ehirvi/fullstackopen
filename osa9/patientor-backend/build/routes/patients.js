@@ -4,24 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const middleware_1 = require("../middleware");
 const patientService_1 = __importDefault(require("../services/patientService"));
-const utils_1 = __importDefault(require("../utils"));
 const router = express_1.default.Router();
 router.get("/", (_req, res) => {
     res.json(patientService_1.default.getNonSensitiveEntries());
 });
-router.post("/", (req, res) => {
-    try {
-        const newPatientEntry = (0, utils_1.default)(req.body);
-        const addedEntry = patientService_1.default.addNewPatient(newPatientEntry);
-        res.json(addedEntry);
-    }
-    catch (error) {
-        let errorMessage = "An error has occured:";
-        if (error instanceof Error) {
-            errorMessage += ` ${error.message}`;
-        }
-        res.status(400).send(errorMessage);
-    }
+router.post("/", middleware_1.newPatientParser, (req, res) => {
+    const addedEntry = patientService_1.default.addNewPatient(req.body);
+    res.json(addedEntry);
 });
+router.use(middleware_1.errorMiddleware);
 exports.default = router;

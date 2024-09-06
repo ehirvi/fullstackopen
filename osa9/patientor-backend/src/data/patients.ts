@@ -1,5 +1,4 @@
-import { Patient } from "../types/types";
-import toNewPatientEntry from "../utils";
+// import { Patient } from "../types/types";
 
 const data = [
   {
@@ -44,10 +43,10 @@ const data = [
   },
 ];
 
-const patientEntries: Patient[] = data.map((entry) => {
-  const object = toNewPatientEntry(entry) as Patient;
-  object.id = entry.id;
-  return object;
-});
+// const patientEntries: Patient[] = data.map((entry) => {
+//   const object = toNewPatientEntry(entry) as Patient;
+//   object.id = entry.id;
+//   return object;
+// });
 
-export default patientEntries;
+export default data;
