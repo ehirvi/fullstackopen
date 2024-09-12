@@ -4,7 +4,7 @@ import Diary from "./Diary";
 const DiaryList = ({ diaries }: { diaries: DiaryEntry[] }) => {
   return (
     <>
-      <h1>Diary entries</h1>
+      <h2>Diary entries</h2>
       {diaries.map((d) => (
         <Diary key={d.id} diary={d} />
       ))}
