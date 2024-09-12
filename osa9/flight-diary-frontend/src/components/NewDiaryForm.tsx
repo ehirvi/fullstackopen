@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NewDiaryEntry } from "../types";
+import { NewDiaryEntry, Visibility, Weather } from "../types";
 
 interface NewDiaryFormProps {
   handleNewEntry: (newEntry: NewDiaryEntry) => void;
@@ -19,7 +19,8 @@ const NewDiaryForm = (props: NewDiaryFormProps) => {
       weather,
       comment,
     };
-    props.handleNewEntry(newEntry);
+    
+    props.handleNewEntry(newEntry as NewDiaryEntry);
     setDate("");
     setVisibility("");
     setWeather("");
@@ -33,26 +34,38 @@ const NewDiaryForm = (props: NewDiaryFormProps) => {
         <div>
           date{" "}
           <input
-            type="text"
+            type="date"
             value={date}
             onChange={(event) => setDate(event.target.value)}
           />
         </div>
-        <div>
-          visibility{" "}
-          <input
-            type="text"
-            value={visibility}
-            onChange={(event) => setVisibility(event.target.value)}
-          />
+        <div style={{ display: "flex", gap: 10}}>
+          visibility
+          {Object.values(Visibility).map((v) => (
+            <div key={v} style={{ display: "flex" }}>
+              {v}
+              <input
+                type="radio"
+                name="visibility"
+                value={v}
+                onChange={(event) => setVisibility(event.target.value)}
+              />
+            </div>
+          ))}
         </div>
-        <div>
-          weather{" "}
-          <input
-            type="text"
-            value={weather}
-            onChange={(event) => setWeather(event.target.value)}
-          />
+        <div style={{display: "flex", gap: 10}}>
+          weather
+          {Object.values(Weather).map((w) => (
+            <div key={w} style={{display: "flex"}}>
+              {w}
+              <input
+                type="radio"
+                name="weather"
+                value={w}
+                onChange={(event) => setWeather(event.target.value)}
+              />
+            </div>
+          ))}
         </div>
         <div>
           comment{" "}
