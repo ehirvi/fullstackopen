@@ -15,13 +15,18 @@ const getNonSensitiveEntries = (): NonSensitivePatientData[] => {
   );
 };
 
+const getFullPatientData = (id: string): Patient | undefined => {
+  return data.find((p) => p.id === id);
+};
+
 const addNewPatient = (patientEntry: NewPatient): Patient => {
   const newPatient: Patient = {
     id: uuid(),
     ...patientEntry,
+    entries: [],
   };
   data.push(newPatient);
   return newPatient;
 };
 
-export default { getNonSensitiveEntries, addNewPatient };
+export default { getNonSensitiveEntries, getFullPatientData, addNewPatient };
