@@ -10,6 +10,15 @@ const router = express_1.default.Router();
 router.get("/", (_req, res) => {
     res.json(patientService_1.default.getNonSensitiveEntries());
 });
+router.get("/:id", (req, res) => {
+    const patientData = patientService_1.default.getFullPatientData(req.params.id);
+    if (patientData) {
+        res.json(patientData);
+    }
+    else {
+        res.sendStatus(404);
+    }
+});
 router.post("/", middleware_1.newPatientParser, (req, res) => {
     const addedEntry = patientService_1.default.addNewPatient(req.body);
     res.json(addedEntry);
