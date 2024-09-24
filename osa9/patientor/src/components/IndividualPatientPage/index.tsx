@@ -4,6 +4,7 @@ import { Diagnosis, Patient } from "../../types";
 import patients from "../../services/patients";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
+import EntryDetails from "../EntryDetails";
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -48,16 +49,7 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
       <div>
         <h3>entries</h3>
         {patient.entries.map((e) => (
-          <div key={e.id}>
-            {e.date} <i>{e.description}</i>
-            <ul>
-              {e.diagnosisCodes?.map((c) => (
-                <li key={c}>
-                  {c} {diagnoses.find((d) => d.code === c)?.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <EntryDetails key={e.id} entry={e} diagnoses={diagnoses} />
         ))}
       </div>
     </div>
