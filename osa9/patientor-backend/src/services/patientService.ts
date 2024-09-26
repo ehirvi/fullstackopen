@@ -1,6 +1,13 @@
-import { NewPatient, NonSensitivePatientData, Patient } from "../types/types";
+import {
+  Entry,
+  NewEntry,
+  NewPatient,
+  NonSensitivePatientData,
+  Patient,
+} from "../types/types";
 import data from "../data/patients";
 import { v1 as uuid } from "uuid";
+import { parseDiagnosisCodes } from "../utils";
 
 const getNonSensitiveEntries = (): NonSensitivePatientData[] => {
   return data.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -26,4 +33,28 @@ const addNewPatient = (patientEntry: NewPatient): Patient => {
   return newPatient;
 };
 
-export default { getNonSensitiveEntries, getFullPatientData, addNewPatient };
+const addNewDiaryEntry = (
+  patientId: string,
+  diaryEntry: NewEntry
+): Entry | null => {
+  const patient = getFullPatientData(patientId);
+  if (!patient) {
+    return null;
+  }
+  const newEntry: Entry = {
+    id: uuid(),
+    ...diaryEntry,
+    diagnosisCodes: parseDiagnosisCodes(diaryEntry),
+  };
+  patient.entries = patient.entries.concat(newEntry);
+  const index = data.findIndex((p) => p.id === patient.id);
+  data[index] = patient;
+  return newEntry;
+};
+
+export default {
+  getNonSensitiveEntries,
+  getFullPatientData,
+  addNewPatient,
+  addNewDiaryEntry,
+};
