@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Diagnosis, Patient } from "../../types";
+import { Diagnosis, NewEntry, Patient } from "../../types";
 import patients from "../../services/patients";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import EntryDetails from "../EntryDetails";
+import { Alert, Button } from "@mui/material";
+import HealthCheckEntryForm from "../NewEntryForm/HealthCheckEntryForm";
+import axios from "axios";
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -13,6 +16,8 @@ interface Props {
 const IndividualPatientPage = ({ diagnoses }: Props) => {
   const { patientId } = useParams();
   const [patient, setPatient] = useState<Patient>();
+  const [formOpen, setFormOpen] = useState(false);
+  const [error, setError] = useState<string>();
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -24,6 +29,30 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
     void fetchPatient();
   }, [patientId]);
 
+  const handleForm = () => {
+    const state = !formOpen;
+    setError(undefined);
+    setFormOpen(state);
+  };
+
+  const addNewEntry = async (entryDetails: NewEntry) => {
+    if (patientId && patient) {
+      try {
+        const addedEntry = await patients.addNewEntry(patientId, entryDetails);
+        const updatedPatient = patient;
+        updatedPatient.entries = updatedPatient.entries.concat(addedEntry);
+        setPatient(updatedPatient);
+        handleForm();
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.data) {
+            setError(error.response.data.error[0].message);
+          }
+        }
+      }
+    }
+  };
+
   if (!patient) {
     return (
       <div>
@@ -31,6 +60,7 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
       </div>
     );
   }
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -45,6 +75,20 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
         ssn: {patient.ssn}
         <br />
         occupation: {patient.occupation}
+      </div>
+      {error && <Alert severity="error">{error}</Alert>}
+      <div style={{ marginTop: 10 }}>
+        {!formOpen && (
+          <Button variant="contained" onClick={handleForm}>
+            Add HealthCheck Entry
+          </Button>
+        )}
+        {formOpen && (
+          <HealthCheckEntryForm
+            closeForm={handleForm}
+            addNewEntry={addNewEntry}
+          />
+        )}
       </div>
       <div>
         <h3>entries</h3>
