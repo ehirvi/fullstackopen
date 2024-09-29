@@ -6,15 +6,17 @@ interface Props {
 }
 
 const DiagnosesCodes = ({ entry, diagnoses }: Props) => {
-  return (
-    <ul>
-      {entry.diagnosisCodes?.map((c) => (
-        <li key={c}>
-          {c} {diagnoses.find((d) => d.code === c)?.name}
-        </li>
-      ))}
-    </ul>
-  );
+  if (entry.diagnosisCodes!.length > 0) {
+    return (
+      <ul>
+        {entry.diagnosisCodes?.map((c) => (
+          <li key={c}>
+            {c} {diagnoses.find((d) => d.code === c)?.name}
+          </li>
+        ))}
+      </ul>
+    );
+  }
 };
 
 export default DiagnosesCodes;

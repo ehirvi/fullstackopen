@@ -6,7 +6,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import EntryDetails from "../EntryDetails";
 import { Alert, Button } from "@mui/material";
-import HealthCheckEntryForm from "../NewEntryForm/HealthCheckEntryForm";
+import NewEntryForm from "../NewEntryForm";
 import axios from "axios";
 
 interface Props {
@@ -80,14 +80,11 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
       <div style={{ marginTop: 10 }}>
         {!formOpen && (
           <Button variant="contained" onClick={handleForm}>
-            Add HealthCheck Entry
+            Add New Entry
           </Button>
         )}
         {formOpen && (
-          <HealthCheckEntryForm
-            closeForm={handleForm}
-            addNewEntry={addNewEntry}
-          />
+          <NewEntryForm closeForm={handleForm} addNewEntry={addNewEntry} />
         )}
       </div>
       <div>
