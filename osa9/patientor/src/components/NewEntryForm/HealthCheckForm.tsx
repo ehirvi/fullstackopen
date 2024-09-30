@@ -1,8 +1,14 @@
-import { TextField } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 interface Props {
-  healthCheckRating: string;
-  setHealthCheckRating: (value: React.SetStateAction<string>) => void;
+  healthCheckRating: number;
+  setHealthCheckRating: (value: React.SetStateAction<number>) => void;
 }
 
 const HealthCheckForm = ({
@@ -10,12 +16,19 @@ const HealthCheckForm = ({
   setHealthCheckRating,
 }: Props) => {
   return (
-    <TextField
-      variant="filled"
-      label="Healthcheck rating"
-      value={healthCheckRating}
-      onChange={({ target }) => setHealthCheckRating(target.value)}
-    />
+    <FormControl>
+      <FormLabel>Healthcheck Rating</FormLabel>
+      <RadioGroup
+        row
+        value={healthCheckRating}
+        onChange={(event) => setHealthCheckRating(Number(event.target.value))}
+      >
+        <FormControlLabel value={0} control={<Radio />} label="Healthy" />
+        <FormControlLabel value={1} control={<Radio />} label="Low Risk" />
+        <FormControlLabel value={2} control={<Radio />} label="High Risk" />
+        <FormControlLabel value={3} control={<Radio />} label="Critical Risk" />
+      </RadioGroup>
+    </FormControl>
   );
 };
 

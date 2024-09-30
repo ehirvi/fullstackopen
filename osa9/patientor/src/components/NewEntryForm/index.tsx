@@ -1,13 +1,16 @@
 import {
   Button,
   FormControl,
+  FormGroup,
+  FormHelperText,
+  Input,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from "@mui/material";
 import { SyntheticEvent, useState } from "react";
-import { NewEntry } from "../../types";
+import { Diagnosis, NewEntry } from "../../types";
 import HealthCheckForm from "./HealthCheckForm";
 import OccupationalHealthcareForm from "./OccupationalHealthcareForm";
 import HospitalForm from "./HospitalForm";
@@ -16,15 +19,18 @@ import { assertNever } from "../../utils";
 interface Props {
   closeForm: () => void;
   addNewEntry: (entryDetails: NewEntry) => Promise<void>;
+  diagnoses: Diagnosis[];
 }
 
-const NewEntryForm = ({ closeForm, addNewEntry }: Props) => {
+const NewEntryForm = ({ closeForm, addNewEntry, diagnoses }: Props) => {
   const [type, setType] = useState<NewEntry["type"]>("HealthCheck");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
-  const [healthCheckRating, setHealthCheckRating] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<
+    Array<Diagnosis["code"]>
+  >([]);
+  const [healthCheckRating, setHealthCheckRating] = useState(0);
   const [employerName, setEmployerName] = useState("");
   const [sickLeaveStartDate, setSickLeaveStartDate] = useState("");
   const [sickLeaveEndDate, setSickLeaveEndDate] = useState("");
@@ -37,7 +43,7 @@ const NewEntryForm = ({ closeForm, addNewEntry }: Props) => {
       description,
       date,
       specialist,
-      diagnosisCodes: diagnosisCodes.split(", "),
+      diagnosisCodes,
     };
     let newEntry: NewEntry;
     switch (type) {
@@ -114,24 +120,40 @@ const NewEntryForm = ({ closeForm, addNewEntry }: Props) => {
         value={description}
         onChange={({ target }) => setDescription(target.value)}
       />
-      <TextField
-        variant="filled"
-        label="Date"
-        value={date}
-        onChange={({ target }) => setDate(target.value)}
-      />
+      <FormGroup>
+        <FormHelperText>Date</FormHelperText>
+        <Input
+          type="date"
+          value={date}
+          onChange={({ target }) => setDate(target.value)}
+        />
+      </FormGroup>
       <TextField
         variant="filled"
         label="Specialist"
         value={specialist}
         onChange={({ target }) => setSpecialist(target.value)}
       />
-      <TextField
-        variant="filled"
-        label="Diagnosis codes"
-        value={diagnosisCodes}
-        onChange={({ target }) => setDiagnosisCodes(target.value)}
-      />
+      <FormControl>
+        <InputLabel>Diagnosis Codes</InputLabel>
+        <Select
+          multiple
+          value={diagnosisCodes}
+          onChange={({ target }) =>
+            setDiagnosisCodes(
+              typeof target.value === "string"
+                ? target.value.split(",")
+                : target.value
+            )
+          }
+        >
+          {diagnoses.map((d) => (
+            <MenuItem key={d.code} value={d.code}>
+              {d.code}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       {type === "HealthCheck" ? (
         <HealthCheckForm
           healthCheckRating={healthCheckRating}

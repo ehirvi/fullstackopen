@@ -1,4 +1,10 @@
-import { InputLabel, TextField } from "@mui/material";
+import {
+  FormGroup,
+  FormHelperText,
+  Input,
+  InputLabel,
+  TextField,
+} from "@mui/material";
 
 interface Props {
   dischargeDate: string;
@@ -16,13 +22,14 @@ const HospitalForm = ({
   return (
     <>
       <InputLabel>Discharge</InputLabel>
-      <TextField
-        style={{ marginLeft: 10 }}
-        variant="filled"
-        label="Date"
-        value={dischargeDate}
-        onChange={({ target }) => setDischargeDate(target.value)}
-      />
+      <FormGroup style={{ marginLeft: 10 }}>
+        <FormHelperText>Date</FormHelperText>
+        <Input
+          type="date"
+          value={dischargeDate}
+          onChange={({ target }) => setDischargeDate(target.value)}
+        />
+      </FormGroup>
       <TextField
         style={{ marginLeft: 10 }}
         variant="filled"

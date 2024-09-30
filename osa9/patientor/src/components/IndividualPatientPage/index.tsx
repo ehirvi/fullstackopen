@@ -84,7 +84,11 @@ const IndividualPatientPage = ({ diagnoses }: Props) => {
           </Button>
         )}
         {formOpen && (
-          <NewEntryForm closeForm={handleForm} addNewEntry={addNewEntry} />
+          <NewEntryForm
+            closeForm={handleForm}
+            addNewEntry={addNewEntry}
+            diagnoses={diagnoses}
+          />
         )}
       </div>
       <div>
